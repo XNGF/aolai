@@ -1,3 +1,5 @@
+from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 
 
@@ -26,3 +28,18 @@ class BaseAction:
 
     def get_text(self, feature):
         return self.find_element(feature).text
+
+    def is_toast_exist(self,message):
+        message_xpath = By.XPATH,"//*[contains(@text,'%s')]" % message
+        try:
+            self.find_element(message_xpath,5,0.1)
+            return True
+        except TimeoutException:
+            return False
+
+    def get_toast_text(self,message):
+        if self.is_toast_exsst(message):
+            message_xpath = By.XPATH, "//*[contains(@text,'%s')]" % message
+            return self.find_element(message_xpath, 5, 0.1).text
+        else:
+            raise Exception("toast未出现，请检查参数是否正确或toast有没有出现在屏幕上")
